@@ -1,26 +1,51 @@
-const http = require('http');
-//console.log('Express Tutorial')
-const server = http.createServer((req, res) => {
-    console.log("user hit the server");
+const express = require('express')
+const app = express()
+const { products } = require('./data')
+const { logger } = require('./logger')
+const  multer  = require('multer');
+//const parse = require("body-parser");
 
-    const url = req.url;
+const upload = multer();
 
-    if (url === '/') {
-        res.writeHead(200, { 'content-type': 'text/html' });
-        res.write('<h1>home Page</h1>');
-        res.end();
-    }
-    else if (url === "/about") {
-        res.writeHead(200, { 'content-type': 'text/html' });
-        res.write('<h1>About Page</h1>');
-        res.end();
-    }
-    else {
-        res.writeHead(400, { 'content-type': 'text/html' })
-        res.write("<h1>ERROR</h1>")
-    }
+//app.use(parse.urlencoded({ extended: false }));
+//app.use(parse.json());
+app.use(logger);
+app.use(express.json());
+app.use(express.static('./methods-public'));
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+    res.status(200).send('Home Page')
 })
 
-server.listen(5000, () => {
-    console.log('Server listening on port : 5000....')
+app.get('/about', (req, res) => {
+
+    res.status(200).send('About Page')
 })
+
+app.post('/login', (req, res) => {
+   
+    res.status(201).json({ status: true})
+    console.log(req.body)
+})
+
+
+
+app.put("/test/put", (req, res) => {
+    res.status(200).send("test put")
+    const  name  = req.body;
+    console.log(req.body);
+    console.log(name);
+})
+
+app.post("/test/post", upload.none(), (req, res) => {
+    const { name } = req.body;
+    //console.log(req);
+    console.log(name);
+    res.status(200).send("test post");
+})
+
+app.listen(5000, () => {
+    console.log('Server is listening on port 5000....');
+})
+// app.get()
