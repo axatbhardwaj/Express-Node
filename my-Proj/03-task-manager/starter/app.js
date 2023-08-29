@@ -11,9 +11,10 @@ require('dotenv').config()
 app.use(express.json());
 
 app.use('/api/v1/tasks', tasks);
+//app.use(express.static('./public'))
 
 app.get('/home', (req, res) => {
-    res.status(200).send('Task Manager App');
+    res.status(200).send();
 })
 
 console.log(process.env.DB_URL);
@@ -24,12 +25,10 @@ const start = async () => {
         app.listen(port, () => {
             console.log(`Server is listening on port ${port}...`)
         })
-
     } catch (error) {
         console.log(error)
     }
 }
-
 start()
 
 //api.get('/api/v1/tasks') - get all the tasks 
