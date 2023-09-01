@@ -8,29 +8,23 @@ const getAllProductsStatic = async (req, res) => {
     res.status(200).json({ products });
 }
 
-const getAllProducts = async (req, res) => {
+const getProducts = async (req, res) => {
 
     const timeStamp = moment().format('HH:mm:ss,DD-MM-YYYY');
     console.log(`function called : getAllProducts ,TIMESTAMP:${timeStamp}`);
     const { name: productName } = req.query;
     if (!productName) {
         const products = await Product.find({});
+        if (!products) {
+            res.status(404).json({ message: `no products found` });
+        }
         res.status(200).json({
             count: products.length
             , products: products
         });
     }
     const products = await Product.find({ name: productName });
-    res.status(200).json({ products })
-}
-
-const getProduct = async (req, res) => {
-    // console.log(productName);
-    const product = await Product.findOne({ name: productName });
-    if (!product) {
-        res.status(404).json({ message: `no product with name: ${productName}` });
-    }
-    res.status(200).json({ product });
+    res.status(200).json({ count: products.length, products: products })
 }
 
 const getFeaturedProducts = async (req, res) => {
@@ -41,4 +35,4 @@ const getFeaturedProducts = async (req, res) => {
     res.status(200).json({ product });
 }
 
-module.exports = { getFeaturedProducts, getAllProducts, getAllProductsStatic, getProduct };
+module.exports = { getFeaturedProducts, getProducts, getAllProductsStatic };
